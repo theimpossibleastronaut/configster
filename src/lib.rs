@@ -164,29 +164,13 @@ fn parse_line(l: &str, attr_delimit_char: char) -> (String, String, Vec<String>)
 
 #[test]
 fn test_parse_file() {
-    let line1 = OptionProperties {
-        option: "option".to_string(),
-        value: Value {
-            primary: "Blue".to_string(),
-            attributes: vec!["light".to_string(), "shiny".to_string()],
-        },
-    };
-
-    let line2 = OptionProperties {
-        option: "max_users".to_string(),
-        value: Value {
-            primary: "30".to_string(),
-            attributes: vec![],
-        },
-    };
-
-    let line3 = OptionProperties {
-        option: "DelayOff".to_string(),
-        value: Value {
-            primary: "".to_string(),
-            attributes: vec![],
-        },
-    };
+    let line1 = OptionProperties::new(
+        "option".to_string(),
+        "Blue".to_string(),
+        vec!["light".to_string(), "shiny".to_string()],
+    );
+    let line2 = OptionProperties::new("max_users".to_string(), "30".to_string(), vec![]);
+    let line3 = OptionProperties::new("DelayOff".to_string().to_string(), "".to_string(), vec![]);
 
     assert_eq!(
         parse_file("./config_test.conf", ',').unwrap(),

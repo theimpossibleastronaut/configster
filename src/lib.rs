@@ -98,25 +98,15 @@ pub fn parse_file(filename: &str, attr_delimit_char: char) -> io::Result<Vec<Opt
     let mut vec: Vec<OptionProperties> = Vec::new();
 
     // for (line, index) in reader.lines().enumerate() {
-    let mut line_num: u32 = 0;
-    for line in reader.lines() {
-        line_num += 1;
-
-        if line.is_err() {
-            return io::Result::Err(line.unwrap_err());
-        }
-
-        let l = line.unwrap();
-
+    for (line_num, line) in reader.lines().enumerate() {
         // Parse the line, return the properties
-        let (option, primary_value, attr_vec) = parse_line(&l, attr_delimit_char, line_num + 1);
+        let (option, primary_value, attr_vec) =
+            parse_line(&(line?), attr_delimit_char, line_num + 1);
 
-        if option.is_empty() {
-            continue;
+        if !option.is_empty() {
+            let opt_props = OptionProperties::new(option, primary_value, attr_vec);
+            vec.push(opt_props);
         }
-
-        let opt_props = OptionProperties::new(option, primary_value, attr_vec);
-        vec.push(opt_props);
 
         // Show the line and its number.
         // println!("{}. {}", index + 1, l);
@@ -126,7 +116,7 @@ pub fn parse_file(filename: &str, attr_delimit_char: char) -> io::Result<Vec<Opt
 
 /// Returns the properties of the option, derived from
 /// a line in the configuration file.
-fn parse_line(l: &str, attr_delimit_char: char, ln: u32) -> (String, String, Vec<String>) {
+fn parse_line(l: &str, attr_delimit_char: char, ln: usize) -> (String, String, Vec<String>) {
     let line = l.trim();
     if line.is_empty() || line.as_bytes()[0] == b'#' {
         return ("".to_string(), "".to_string(), vec![]);

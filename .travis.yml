@@ -1,0 +1,6 @@
+language: rust
+os: linux
+dist: bionic
+script:
+  - cargo check --verbose
+  - cargo test

@@ -1,0 +1,13 @@
+[package]
+name = "configster"
+version = "0.1.0"
+authors = ["Andy Alt <andy400-dev@yahoo.com>", "James Sherrat"]
+edition = "2018"
+license = "MIT"
+description = "Library for parsing configuration files"
+homepage = "https://github.com/theimpossibleastronaut/configster"
+readme = "README.md"
+keywords = ["config", "parsing", "library", "configuration", "settings"]
+categories = ["config"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

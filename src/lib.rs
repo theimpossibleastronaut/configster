@@ -97,7 +97,6 @@ pub fn parse_file(filename: &str, attr_delimit_char: char) -> io::Result<Vec<Opt
     let reader = BufReader::new(file.unwrap());
     let mut vec: Vec<OptionProperties> = Vec::new();
 
-    // for (line, index) in reader.lines().enumerate() {
     for (line_num, line) in reader.lines().enumerate() {
         // Parse the line, return the properties
         let (option, primary_value, attr_vec) =

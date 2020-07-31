@@ -2,6 +2,12 @@ use std::fs::File;
 use std::io;
 use std::io::{BufRead, BufReader};
 
+/// Returns the library version
+#[inline]
+pub fn get_ver() -> String {
+    String::from(env!("CARGO_PKG_VERSION"))
+}
+
 #[derive(Debug, PartialEq)]
 pub struct Value {
     pub primary: String,

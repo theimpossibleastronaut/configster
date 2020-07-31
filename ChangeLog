@@ -1,0 +1,3 @@
+# configster ChangeLog
+
+* Add get_ver() function. Returns a String containing the library version.

@@ -98,7 +98,10 @@ pub fn parse_file(filename: &str, attr_delimit_char: char) -> io::Result<Vec<Opt
     let mut vec: Vec<OptionProperties> = Vec::new();
 
     // for (line, index) in reader.lines().enumerate() {
+    let mut line_num: u32 = 0;
     for line in reader.lines() {
+        line_num += 1;
+
         if line.is_err() {
             return io::Result::Err(line.unwrap_err());
         }
@@ -106,7 +109,7 @@ pub fn parse_file(filename: &str, attr_delimit_char: char) -> io::Result<Vec<Opt
         let l = line.unwrap();
 
         // Parse the line, return the properties
-        let (option, primary_value, attr_vec) = parse_line(&l, attr_delimit_char);
+        let (option, primary_value, attr_vec) = parse_line(&l, attr_delimit_char, line_num + 1);
 
         if option.is_empty() {
             continue;
@@ -123,7 +126,7 @@ pub fn parse_file(filename: &str, attr_delimit_char: char) -> io::Result<Vec<Opt
 
 /// Returns the properties of the option, derived from
 /// a line in the configuration file.
-fn parse_line(l: &str, attr_delimit_char: char) -> (String, String, Vec<String>) {
+fn parse_line(l: &str, attr_delimit_char: char, ln: u32) -> (String, String, Vec<String>) {
     let line = l.trim();
     if line.is_empty() || line.as_bytes()[0] == b'#' {
         return ("".to_string(), "".to_string(), vec![]);
@@ -142,7 +145,7 @@ fn parse_line(l: &str, attr_delimit_char: char) -> (String, String, Vec<String>)
     let o = &option;
     for c in o.chars() {
         if c.is_whitespace() {
-            option = "InvalidOption".to_string();
+            option = format!("{}_on_Line{}", "InvalidOption".to_string(), ln);
             return (option, "".to_string(), vec![]);
         }
     }
@@ -188,13 +191,13 @@ fn test_parse_file() {
 fn test_parse_line() {
     // Test with no attributes
     assert_eq!(
-        parse_line("Option = /home/foo", ','),
+        parse_line("Option = /home/foo", ',', 0),
         ("Option".to_string(), "/home/foo".to_string(), vec![])
     );
 
     // Test with 5 attributes and several spaces
     assert_eq!(
-        parse_line("Option=/home/foo , another  ,   test,1,2,3", ','),
+        parse_line("Option=/home/foo , another  ,   test,1,2,3", ',', 0),
         (
             "Option".to_string(),
             "/home/foo".to_string(),
@@ -210,13 +213,13 @@ fn test_parse_line() {
 
     // Test with leading '#' sign
     assert_eq!(
-        parse_line("#Option = /home/foo", ','),
+        parse_line("#Option = /home/foo", ',', 0),
         ("".to_string(), "".to_string(), vec![])
     );
 
     // Test with two attributes, a single space after the commas
     assert_eq!(
-        parse_line("Option = /home/foo, removable, test", ','),
+        parse_line("Option = /home/foo, removable, test", ',', 0),
         (
             "Option".to_string(),
             "/home/foo".to_string(),
@@ -226,19 +229,23 @@ fn test_parse_line() {
 
     // Test for blank line
     assert_eq!(
-        parse_line("        ", ','),
+        parse_line("        ", ',', 0),
         ("".to_string(), "".to_string(), vec![])
     );
 
     // Test for whitespace in Option
     assert_eq!(
-        parse_line("Option  /home/foo", ','),
-        ("InvalidOption".to_string(), "".to_string(), vec![])
+        parse_line("Option  /home/foo", ',', 28),
+        (
+            "InvalidOption_on_Line28".to_string(),
+            "".to_string(),
+            vec![]
+        )
     );
 
     // Test for '=' after Option has already been marked as invalid.
     assert_eq!(
-        parse_line("Option  /home/foo = value", ','),
-        ("InvalidOption".to_string(), "".to_string(), vec![])
+        parse_line("Option  /home/foo = value", ',', 9),
+        ("InvalidOption_on_Line9".to_string(), "".to_string(), vec![])
     );
 }

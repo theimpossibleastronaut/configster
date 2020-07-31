@@ -61,12 +61,11 @@ impl OptionProperties {
 /// Accessing the Parsed Data:
 ///
 /// ```
-/// use configster::parse_file;
 /// use std::io;
 ///
 /// fn main() -> Result<(), io::Error> {
 ///
-///     let config_vec = parse_file("./config_test.conf", ',');
+///     let config_vec = configster::parse_file("./config_test.conf", ',');
 ///     if config_vec.is_err() {
 ///         return io::Result::Err(config_vec.unwrap_err());
 ///     }

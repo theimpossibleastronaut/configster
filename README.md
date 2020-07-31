@@ -57,28 +57,25 @@ pub struct OptionProperties {
 ## Example Code
 
 ```
-/// use configster::parse_file;
-/// use std::io;
-///
-/// fn main() -> Result<(), io::Error> {
-///
-///     let config_vec = parse_file("./config_test.conf", ',');
-///     if config_vec.is_err() {
-///         return io::Result::Err(config_vec.unwrap_err());
-///     }
-///
-///     for i in &config_vec.unwrap() {
-///         println!("Option:'{}' | value '{}'", i.option, i.value.primary);
-///
-///         for j in &i.value.attributes {
-///             println!("attr:'{}`", j);
-///         }
-///         println!();
-///     }
-///     Ok(())
-/// }
-/// ```
+use std::io;
 
+fn main() -> Result<(), io::Error> {
+
+    let config_vec = configster::parse_file("./config_test.conf", ',');
+    if config_vec.is_err() {
+        return io::Result::Err(config_vec.unwrap_err());
+    }
+
+    for i in &config_vec.unwrap() {
+        println!("Option:'{}' | value '{}'", i.option, i.value.primary);
+
+        for j in &i.value.attributes {
+            println!("attr:'{}`", j);
+        }
+        println!();
+    }
+    Ok(())
+}
 ```
 
 See [docs.rs/configster/](https://docs.rs/configster/0.1.0/configster/fn.parse_file.html)

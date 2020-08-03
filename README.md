@@ -1,3 +1,6 @@
+[![crates-badge]][crates-url]
+[crates-badge]: https://img.shields.io/crates/v/configster.svg
+[crates-url]: https://crates.io/crates/configster
 [![Build Status](https://travis-ci.com/theimpossibleastronaut/configster.svg?branch=trunk)](https://travis-ci.com/theimpossibleastronaut/configster)
 
 # configster

@@ -8,8 +8,6 @@
 
 Library for parsing configuration files
 
-[configster on crates.io](https://crates.io/crates/configster)
-
 ## Config file format
 
 The 'option' can be any string with no whitespace.

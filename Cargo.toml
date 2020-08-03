@@ -7,7 +7,7 @@ license = "MIT"
 description = "Library for parsing configuration files"
 homepage = "https://github.com/theimpossibleastronaut/configster"
 readme = "README.md"
-keywords = ["config", "parsing", "library", "configuration", "settings"]
-categories = ["config"]
+keywords = ["config", "parser", "library", "settings"]
+categories = ["configuration", "parser-implementations"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

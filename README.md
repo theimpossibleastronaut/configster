@@ -6,7 +6,7 @@
 
 # configster
 
-Library for parsing configuration files
+Rust library for parsing configuration files
 
 ## Config file format
 

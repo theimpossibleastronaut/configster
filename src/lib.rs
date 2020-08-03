@@ -169,10 +169,11 @@ fn test_parse_file() {
     );
     let line2 = OptionProperties::new("max_users".to_string(), "30".to_string(), vec![]);
     let line3 = OptionProperties::new("DelayOff".to_string().to_string(), "".to_string(), vec![]);
+    let invalid_option = OptionProperties::new("InvalidOption_on_Line8".to_string().to_string(), "".to_string(), vec![]);
 
     assert_eq!(
         parse_file("./config_test.conf", ',').unwrap(),
-        vec![line1, line2, line3]
+        vec![line1, line2, line3, invalid_option]
     );
 }
 

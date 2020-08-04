@@ -1,3 +1,6 @@
 # configster ChangeLog
 
-* Add get_ver() function. Returns a String containing the library version.
+* When an invalid option is encountered, 'InvalidOption_on_Linexx' is
+assigned to the option (instead of 'InvalidOption').
+
+* Added get_ver() function. Returns a String containing the library version.

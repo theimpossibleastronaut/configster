@@ -8,16 +8,32 @@ pub fn get_ver() -> String {
     String::from(env!("CARGO_PKG_VERSION"))
 }
 
-#[derive(Debug, PartialEq)]
-pub struct Value {
-    pub primary: String,
-    pub attributes: Vec<String>,
-}
-
+/// The type for each Option; holds the information
+/// for each element of a line in a config file.
+///
+/// # Examples
+///
+/// Basic Usage:
+///
+/// let opt_props = OptionProperties {
+///      option: String::new(),
+///      value: Value {
+///          primary_value: String::new(),
+///          attributes: Vec::new(),
+///      },
+/// };
 #[derive(Debug, PartialEq)]
 pub struct OptionProperties {
     pub option: String,
     pub value: Value,
+}
+
+/// The type holding the primary value and the attributes; this is a nested type
+/// within the OptionProperties struct.
+#[derive(Debug, PartialEq)]
+pub struct Value {
+    pub primary: String,
+    pub attributes: Vec<String>,
 }
 
 impl OptionProperties {
@@ -34,35 +50,9 @@ impl OptionProperties {
 
 /// Parses a configuration file. The second parameter sets the delimiter for the
 /// attribute list of the primary value. The return value is a vector wrapped in
-/// an io::Result type.
+/// an io::Result type (e.g. 'fn foo() -> io::Result<Vec<OptionProperties>> { ...')
 ///
-/// ## Examples
-///
-/// Config file format:
-///
-/// ```text
-/// ExampleOption = 12
-///
-/// ExampleOption2 = /home/foo/bar, optional, attribute, list, for, value
-///
-/// example_option3 = Hello
-///
-/// # Option = commented_out_using_hashtag
-/// ```
-///
-/// Options Without Values:
-///
-/// ```text
-/// DefaultFeatureFooDisabled
-/// ```
-///
-/// Options With the Same Name:
-///
-/// ```text
-/// color = Green
-/// color = Blue
-/// color = Black
-/// ```
+/// # Examples
 ///
 /// Accessing the Parsed Data:
 ///
@@ -71,12 +61,9 @@ impl OptionProperties {
 ///
 /// fn main() -> Result<(), io::Error> {
 ///
-///     let config_vec = configster::parse_file("./config_test.conf", ',');
-///     if config_vec.is_err() {
-///         return io::Result::Err(config_vec.unwrap_err());
-///     }
+///     let config_vec = configster::parse_file("./config_test.conf", ',')?;
 ///
-///     for i in &config_vec.unwrap() {
+///     for i in &config_vec {
 ///         println!("Option:'{}' | value '{}'", i.option, i.value.primary);
 ///
 ///         for j in &i.value.attributes {

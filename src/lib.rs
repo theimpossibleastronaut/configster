@@ -89,12 +89,8 @@ impl OptionProperties {
 /// ```
 #[inline]
 pub fn parse_file(filename: &str, attr_delimit_char: char) -> io::Result<Vec<OptionProperties>> {
-    let file = File::open(filename);
-    if file.is_err() {
-        return io::Result::Err(file.unwrap_err());
-    }
-
-    let reader = BufReader::new(file.unwrap());
+    let file = File::open(filename)?;
+    let reader = BufReader::new(file);
     let mut vec: Vec<OptionProperties> = Vec::new();
 
     for (line_num, line) in reader.lines().enumerate() {
@@ -124,8 +120,8 @@ fn parse_line(l: &str, attr_delimit_char: char, ln: usize) -> (String, String, V
     let mut i = line.find('=');
     let (mut option, value) = match i.is_some() {
         true => (
-            format!("{}", &line[..i.unwrap()].trim()),
-            format!("{}", &line[i.unwrap() + 1..].trim()),
+            line[..i.unwrap()].trim().to_string(),
+            line[i.unwrap() + 1..].trim().to_string(),
         ),
         false => (line.to_string(), String::new()),
     };
@@ -145,11 +141,11 @@ fn parse_line(l: &str, attr_delimit_char: char, ln: usize) -> (String, String, V
     let attributes;
     match i.is_some() {
         true => {
-            primary_value = format!("{}", &value[..i.unwrap()].trim());
-            attributes = format!("{}", &value[i.unwrap() + 1..]);
+            primary_value = value[..i.unwrap()].trim().to_string();
+            attributes = value[i.unwrap() + 1..].to_string();
             tmp_attr_vec = attributes.split(attr_delimit_char).collect();
         }
-        false => primary_value = format!("{}", value.to_string()),
+        false => primary_value = value,
     }
 
     let mut attr_vec: Vec<String> = Vec::new();
@@ -169,7 +165,11 @@ fn test_parse_file() {
     );
     let line2 = OptionProperties::new("max_users".to_string(), "30".to_string(), vec![]);
     let line3 = OptionProperties::new("DelayOff".to_string().to_string(), "".to_string(), vec![]);
-    let invalid_option = OptionProperties::new("InvalidOption_on_Line8".to_string().to_string(), "".to_string(), vec![]);
+    let invalid_option = OptionProperties::new(
+        "InvalidOption_on_Line8".to_string().to_string(),
+        "".to_string(),
+        vec![],
+    );
 
     assert_eq!(
         parse_file("./config_test.conf", ',').unwrap(),

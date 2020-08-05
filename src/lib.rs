@@ -13,15 +13,26 @@ pub fn get_ver() -> String {
 ///
 /// # Examples
 ///
-/// Basic Usage:
+/// A function argument:
 ///
-/// let opt_props = OptionProperties {
-///      option: String::new(),
-///      value: Value {
-///          primary_value: String::new(),
-///          attributes: Vec::new(),
-///      },
-/// };
+/// ```text
+/// fn assign_properties(st_option_props: &configster::OptionProperties, homedir: &str) {
+///     let mut value = "$HOME/Documents";
+///     value = st_option_props.value.primary.replace("$HOME", &homedir);
+/// }
+/// ```
+///
+/// A return type:
+///
+/// ```text
+/// fn parse(
+///     opt_cfg: Option<String>,
+///     homedir: String,
+/// ) -> io::Result<Vec<configster::OptionProperties>> {
+///     // ...
+///     Ok(config_vec)
+/// }
+/// ```
 #[derive(Debug, PartialEq)]
 pub struct OptionProperties {
     pub option: String,
@@ -29,7 +40,7 @@ pub struct OptionProperties {
 }
 
 /// The type holding the primary value and the attributes; this is a nested type
-/// within the OptionProperties struct.
+/// within [OptionProperties](struct.OptionProperties.html).
 #[derive(Debug, PartialEq)]
 pub struct Value {
     pub primary: String,
@@ -49,8 +60,9 @@ impl OptionProperties {
 }
 
 /// Parses a configuration file. The second parameter sets the delimiter for the
-/// attribute list of the primary value. The return value is a vector wrapped in
-/// an io::Result type (e.g. 'fn foo() -> io::Result<Vec<OptionProperties>> { ...')
+/// attribute list of the primary value. The return value is an [OptionProperties](struct.OptionProperties.html)
+/// type vector wrapped in an io::Result type. Details about the configuration file format are in the project's
+/// [README.md](https://github.com/theimpossibleastronaut/configster/blob/trunk/README.md).
 ///
 /// # Examples
 ///

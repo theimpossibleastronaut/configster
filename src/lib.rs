@@ -92,31 +92,19 @@ impl OptionProperties {
 /// ```
 #[inline]
 pub fn parse_file(filename: &str, attr_delimit_char: char) -> io::Result<Vec<OptionProperties>> {
-    let file = File::open(filename);
-    if file.is_err() {
-        return io::Result::Err(file.unwrap_err());
-    }
-
-    let reader = BufReader::new(file.unwrap());
+    let file = File::open(filename)?;
+    let reader = BufReader::new(file);
     let mut vec: Vec<OptionProperties> = Vec::new();
 
-    // for (line, index) in reader.lines().enumerate() {
-    for line in reader.lines() {
-        if line.is_err() {
-            return io::Result::Err(line.unwrap_err());
-        }
-
-        let l = line.unwrap();
-
+    for (line_num, line) in reader.lines().enumerate() {
         // Parse the line, return the properties
-        let (option, primary_value, attr_vec) = parse_line(&l, attr_delimit_char);
+        let (option, primary_value, attr_vec) =
+            parse_line(&(line?), attr_delimit_char, line_num + 1);
 
-        if option.is_empty() {
-            continue;
+        if !option.is_empty() {
+            let opt_props = OptionProperties::new(option, primary_value, attr_vec);
+            vec.push(opt_props);
         }
-
-        let opt_props = OptionProperties::new(option, primary_value, attr_vec);
-        vec.push(opt_props);
 
         // Show the line and its number.
         // println!("{}. {}", index + 1, l);
@@ -126,7 +114,7 @@ pub fn parse_file(filename: &str, attr_delimit_char: char) -> io::Result<Vec<Opt
 
 /// Returns the properties of the option, derived from
 /// a line in the configuration file.
-fn parse_line(l: &str, attr_delimit_char: char) -> (String, String, Vec<String>) {
+fn parse_line(l: &str, attr_delimit_char: char, ln: usize) -> (String, String, Vec<String>) {
     let line = l.trim();
     if line.is_empty() || line.as_bytes()[0] == b'#' {
         return ("".to_string(), "".to_string(), vec![]);
@@ -135,8 +123,8 @@ fn parse_line(l: &str, attr_delimit_char: char) -> (String, String, Vec<String>)
     let mut i = line.find('=');
     let (mut option, value) = match i.is_some() {
         true => (
-            format!("{}", &line[..i.unwrap()].trim()),
-            format!("{}", &line[i.unwrap() + 1..].trim()),
+            line[..i.unwrap()].trim().to_string(),
+            line[i.unwrap() + 1..].trim().to_string(),
         ),
         false => (line.to_string(), String::new()),
     };
@@ -145,7 +133,7 @@ fn parse_line(l: &str, attr_delimit_char: char) -> (String, String, Vec<String>)
     let o = &option;
     for c in o.chars() {
         if c.is_whitespace() {
-            option = "InvalidOption".to_string();
+            option = format!("{}_on_Line{}", "InvalidOption".to_string(), ln);
             return (option, "".to_string(), vec![]);
         }
     }
@@ -156,11 +144,11 @@ fn parse_line(l: &str, attr_delimit_char: char) -> (String, String, Vec<String>)
     let attributes;
     match i.is_some() {
         true => {
-            primary_value = format!("{}", &value[..i.unwrap()].trim());
-            attributes = format!("{}", &value[i.unwrap() + 1..]);
+            primary_value = value[..i.unwrap()].trim().to_string();
+            attributes = value[i.unwrap() + 1..].to_string();
             tmp_attr_vec = attributes.split(attr_delimit_char).collect();
         }
-        false => primary_value = format!("{}", value.to_string()),
+        false => primary_value = value,
     }
 
     let mut attr_vec: Vec<String> = Vec::new();
@@ -180,10 +168,15 @@ fn test_parse_file() {
     );
     let line2 = OptionProperties::new("max_users".to_string(), "30".to_string(), vec![]);
     let line3 = OptionProperties::new("DelayOff".to_string().to_string(), "".to_string(), vec![]);
+    let invalid_option = OptionProperties::new(
+        "InvalidOption_on_Line8".to_string().to_string(),
+        "".to_string(),
+        vec![],
+    );
 
     assert_eq!(
         parse_file("./config_test.conf", ',').unwrap(),
-        vec![line1, line2, line3]
+        vec![line1, line2, line3, invalid_option]
     );
 }
 
@@ -191,13 +184,13 @@ fn test_parse_file() {
 fn test_parse_line() {
     // Test with no attributes
     assert_eq!(
-        parse_line("Option = /home/foo", ','),
+        parse_line("Option = /home/foo", ',', 0),
         ("Option".to_string(), "/home/foo".to_string(), vec![])
     );
 
     // Test with 5 attributes and several spaces
     assert_eq!(
-        parse_line("Option=/home/foo , another  ,   test,1,2,3", ','),
+        parse_line("Option=/home/foo , another  ,   test,1,2,3", ',', 0),
         (
             "Option".to_string(),
             "/home/foo".to_string(),
@@ -213,13 +206,13 @@ fn test_parse_line() {
 
     // Test with leading '#' sign
     assert_eq!(
-        parse_line("#Option = /home/foo", ','),
+        parse_line("#Option = /home/foo", ',', 0),
         ("".to_string(), "".to_string(), vec![])
     );
 
     // Test with two attributes, a single space after the commas
     assert_eq!(
-        parse_line("Option = /home/foo, removable, test", ','),
+        parse_line("Option = /home/foo, removable, test", ',', 0),
         (
             "Option".to_string(),
             "/home/foo".to_string(),
@@ -229,19 +222,23 @@ fn test_parse_line() {
 
     // Test for blank line
     assert_eq!(
-        parse_line("        ", ','),
+        parse_line("        ", ',', 0),
         ("".to_string(), "".to_string(), vec![])
     );
 
     // Test for whitespace in Option
     assert_eq!(
-        parse_line("Option  /home/foo", ','),
-        ("InvalidOption".to_string(), "".to_string(), vec![])
+        parse_line("Option  /home/foo", ',', 28),
+        (
+            "InvalidOption_on_Line28".to_string(),
+            "".to_string(),
+            vec![]
+        )
     );
 
     // Test for '=' after Option has already been marked as invalid.
     assert_eq!(
-        parse_line("Option  /home/foo = value", ','),
-        ("InvalidOption".to_string(), "".to_string(), vec![])
+        parse_line("Option  /home/foo = value", ',', 9),
+        ("InvalidOption_on_Line9".to_string(), "".to_string(), vec![])
     );
 }

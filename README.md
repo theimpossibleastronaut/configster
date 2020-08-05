@@ -77,9 +77,9 @@ pub struct OptionProperties {
 /// }
 ```
 
-See [docs.rs/configster/](https://docs.rs/configster/0.1.0/configster/fn.parse_file.html)
+See [docs.rs/configster/](https://docs.rs/configster/)
 for generated API documentation.
 
-# Contributing
+## Contributing
 
 See [CONTRIBUTING.md](https://github.com/theimpossibleastronaut/configster/CONTRIBUTING.md)

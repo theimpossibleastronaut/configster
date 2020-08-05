@@ -43,7 +43,11 @@ pub struct OptionProperties {
 /// within [OptionProperties](struct.OptionProperties.html).
 #[derive(Debug, PartialEq)]
 pub struct Value {
+    /// A string following the option and an '=' sign in a [configuration file](https://github.com/theimpossibleastronaut/configster/blob/trunk/README.md#config-file-format).
+    /// (e.g. "directory = /home/foo")
     pub primary: String,
+    /// A list separated by a delimiter, which is specified as a parameter in
+    /// [parse_file](fn.parse_file.html).
     pub attributes: Vec<String>,
 }
 

@@ -6,7 +6,9 @@ edition = "2018"
 license = "MIT"
 description = "Rust library for parsing configuration files"
 homepage = "https://github.com/theimpossibleastronaut/configster"
+repository = "https://github.com/theimpossibleastronaut/configster"
 readme = "README.md"
+
 keywords = ["config", "parser", "library", "settings"]
 categories = ["config", "parser-implementations"]
 

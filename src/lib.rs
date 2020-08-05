@@ -8,16 +8,47 @@ pub fn get_ver() -> String {
     String::from(env!("CARGO_PKG_VERSION"))
 }
 
-#[derive(Debug, PartialEq)]
-pub struct Value {
-    pub primary: String,
-    pub attributes: Vec<String>,
-}
-
+/// The type for each Option; holds the information
+/// for each element of a line in a config file.
+///
+/// # Examples
+///
+/// A function argument:
+///
+/// ```text
+/// fn assign_properties(st_option_props: &configster::OptionProperties, homedir: &str) {
+///     let mut value = "$HOME/Documents";
+///     value = st_option_props.value.primary.replace("$HOME", &homedir);
+/// }
+/// ```
+///
+/// A return type:
+///
+/// ```text
+/// fn parse(
+///     opt_cfg: Option<String>,
+///     homedir: String,
+/// ) -> io::Result<Vec<configster::OptionProperties>> {
+///     // ...
+///     Ok(config_vec)
+/// }
+/// ```
 #[derive(Debug, PartialEq)]
 pub struct OptionProperties {
     pub option: String,
     pub value: Value,
+}
+
+/// The type holding the primary value and the attributes; this is a nested type
+/// within [OptionProperties](struct.OptionProperties.html).
+#[derive(Debug, PartialEq)]
+pub struct Value {
+    /// A string following the option and an '=' sign in a [configuration file](https://github.com/theimpossibleastronaut/configster/blob/trunk/README.md#config-file-format).
+    /// (e.g. "directory = /home/foo")
+    pub primary: String,
+    /// A list separated by a delimiter, which is specified as a parameter in
+    /// [parse_file](fn.parse_file.html).
+    pub attributes: Vec<String>,
 }
 
 impl OptionProperties {
@@ -33,36 +64,11 @@ impl OptionProperties {
 }
 
 /// Parses a configuration file. The second parameter sets the delimiter for the
-/// attribute list of the primary value. The return value is a vector wrapped in
-/// an io::Result type.
+/// attribute list of the primary value. The return value is an [OptionProperties](struct.OptionProperties.html)
+/// type vector wrapped in an io::Result type. Details about the configuration file format are in the project's
+/// [README.md](https://github.com/theimpossibleastronaut/configster/blob/trunk/README.md).
 ///
-/// ## Examples
-///
-/// Config file format:
-///
-/// ```text
-/// ExampleOption = 12
-///
-/// ExampleOption2 = /home/foo/bar, optional, attribute, list, for, value
-///
-/// example_option3 = Hello
-///
-/// # Option = commented_out_using_hashtag
-/// ```
-///
-/// Options Without Values:
-///
-/// ```text
-/// DefaultFeatureFooDisabled
-/// ```
-///
-/// Options With the Same Name:
-///
-/// ```text
-/// color = Green
-/// color = Blue
-/// color = Black
-/// ```
+/// # Examples
 ///
 /// Accessing the Parsed Data:
 ///
@@ -71,12 +77,9 @@ impl OptionProperties {
 ///
 /// fn main() -> Result<(), io::Error> {
 ///
-///     let config_vec = configster::parse_file("./config_test.conf", ',');
-///     if config_vec.is_err() {
-///         return io::Result::Err(config_vec.unwrap_err());
-///     }
+///     let config_vec = configster::parse_file("./config_test.conf", ',')?;
 ///
-///     for i in &config_vec.unwrap() {
+///     for i in &config_vec {
 ///         println!("Option:'{}' | value '{}'", i.option, i.value.primary);
 ///
 ///         for j in &i.value.attributes {

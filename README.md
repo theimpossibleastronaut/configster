@@ -59,30 +59,27 @@ pub struct OptionProperties {
 ## Example Code
 
 ```
-use std::io;
-
-fn main() -> Result<(), io::Error> {
-
-    let config_vec = configster::parse_file("./config_test.conf", ',');
-    if config_vec.is_err() {
-        return io::Result::Err(config_vec.unwrap_err());
-    }
-
-    for i in &config_vec.unwrap() {
-        println!("Option:'{}' | value '{}'", i.option, i.value.primary);
-
-        for j in &i.value.attributes {
-            println!("attr:'{}`", j);
-        }
-        println!();
-    }
-    Ok(())
-}
+/// use std::io;
+///
+/// fn main() -> Result<(), io::Error> {
+///
+///     let config_vec = configster::parse_file("./config_test.conf", ',')?;
+///
+///     for i in &config_vec {
+///         println!("Option:'{}' | value '{}'", i.option, i.value.primary);
+///
+///         for j in &i.value.attributes {
+///             println!("attr:'{}`", j);
+///         }
+///         println!();
+///     }
+///     Ok(())
+/// }
 ```
 
-See [docs.rs/configster/](https://docs.rs/configster/0.1.0/configster/fn.parse_file.html)
+See [docs.rs/configster/](https://docs.rs/configster/)
 for generated API documentation.
 
-# Contributing
+## Contributing
 
 See [CONTRIBUTING.md](https://github.com/theimpossibleastronaut/configster/CONTRIBUTING.md)

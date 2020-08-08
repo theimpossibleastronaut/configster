@@ -1,6 +1,6 @@
 [package]
 name = "configster"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Andy Alt <andy400-dev@yahoo.com>", "James Sherratt"]
 edition = "2018"
 license = "MIT"

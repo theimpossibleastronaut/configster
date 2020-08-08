@@ -1,6 +1,5 @@
 use std::fs::File;
-use std::io;
-use std::io::{BufRead, BufReader};
+use std::io::{self, BufRead, BufReader};
 
 /// Returns the library version
 #[inline]

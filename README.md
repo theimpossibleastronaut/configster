@@ -12,7 +12,7 @@ Rust library for parsing configuration files
 
 The 'option' can be any string with no whitespace.
 
-```
+```ini
 arbitrary_option = false
 max_users = 30
 ```
@@ -21,10 +21,11 @@ The value for an option following the equal sign may have "attributes"
 that are separated by a delimiter. The delimiter is specified when
 calling parse_file():
 
-    parse_file("./config_test.conf", ',')
-
-
+```rust
+parse_file("./config_test.conf", ',')
 ```
+
+```ini
 option = Blue, light, shiny
 # option = nothing, void, empty, commented_out
 ```
@@ -42,7 +43,7 @@ Calling parse_file() will return a single vector containing a struct
 attributes for a value are stored in a vector within the "Value"
 struct.
 
-```
+```rust
 #[derive(Debug, PartialEq)]
 pub struct Value {
     pub primary: String,
@@ -58,23 +59,23 @@ pub struct OptionProperties {
 
 ## Example Code
 
-```
-/// use std::io;
-///
-/// fn main() -> Result<(), io::Error> {
-///
-///     let config_vec = configster::parse_file("./config_test.conf", ',')?;
-///
-///     for i in &config_vec {
-///         println!("Option:'{}' | value '{}'", i.option, i.value.primary);
-///
-///         for j in &i.value.attributes {
-///             println!("attr:'{}`", j);
-///         }
-///         println!();
-///     }
-///     Ok(())
-/// }
+```rust
+use std::io;
+
+fn main() -> Result<(), io::Error> {
+
+    let config_vec = configster::parse_file("./config_test.conf", ',')?;
+
+    for i in &config_vec {
+        println!("Option:'{}' | value '{}'", i.option, i.value.primary);
+
+        for j in &i.value.attributes {
+            println!("attr:'{}`", j);
+        }
+        println!();
+    }
+    Ok(())
+}
 ```
 
 See [docs.rs/configster/](https://docs.rs/configster/)

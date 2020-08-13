@@ -32,7 +32,7 @@ option = Blue, light, shiny
 
 An option is not required to be followed by a value. It can be used to disable a default feature.
 
-```
+```ini
 FeatureOff
 ```
 

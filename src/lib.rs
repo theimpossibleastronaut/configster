@@ -166,9 +166,9 @@ fn test_parse_file() {
         vec!["light".to_string(), "shiny".to_string()],
     );
     let line2 = OptionProperties::new("max_users".to_string(), "30".to_string(), vec![]);
-    let line3 = OptionProperties::new("DelayOff".to_string().to_string(), "".to_string(), vec![]);
+    let line3 = OptionProperties::new("DelayOff".to_string(), "".to_string(), vec![]);
     let invalid_option = OptionProperties::new(
-        "InvalidOption_on_Line8".to_string().to_string(),
+        "InvalidOption_on_Line8".to_string(),
         "".to_string(),
         vec![],
     );

@@ -82,7 +82,3 @@ fn main() -> Result<(), io::Error> {
 
 See [docs.rs/configster/](https://docs.rs/configster/)
 for generated API documentation.
-
-## Contributing
-
-See [CONTRIBUTING.md](https://github.com/theimpossibleastronaut/configster/CONTRIBUTING.md)

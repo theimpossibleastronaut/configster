@@ -1,6 +1,8 @@
-[![Build Status](https://travis-ci.com/theimpossibleastronaut/configster.svg?branch=trunk)](https://travis-ci.com/theimpossibleastronaut/configster)
+[![Rust-badge]][Rust-url]
 [![crates-badge]][crates-url]
 
+[Rust-badge]: https://github.com/theimpossibleastronaut/configster/actions/workflows/rust.yml/badge.svg
+[Rust-url]: https://github.com/theimpossibleastronaut/configster/actions/workflows/rust.yml
 [crates-badge]: https://img.shields.io/crates/v/configster.svg
 [crates-url]: https://crates.io/crates/configster
 

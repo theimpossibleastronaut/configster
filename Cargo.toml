@@ -2,7 +2,7 @@
 name = "configster"
 version = "0.1.2-dev"
 authors = ["Andy Alt <andy400-dev@yahoo.com>", "James Sherratt"]
-edition = "2018"
+edition = "2021"
 license = "MIT"
 description = "Rust library for parsing configuration files"
 homepage = "https://github.com/theimpossibleastronaut/configster"
